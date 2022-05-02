@@ -1,2 +1,21 @@
 const http = require("http");
-console.log(http);
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const courseRoutes = require("./course-routes");
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use("/course", courseRoutes);
+
+mongoose
+  .connect(
+    "mongodb+srv://OG1:112233@cluster0.owz5w.mongodb.net/School?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(5000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
