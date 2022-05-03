@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/create", courseController.createCourse);
 router.patch("/update", courseController.updateCourse);
+router.delete("/delete", courseController.deleteCourse);
 
 module.exports = router;

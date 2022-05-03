@@ -11,7 +11,7 @@ app.use("/course", courseRoutes);
 
 mongoose
   .connect(
-    "mongodb+srv://OG1:112233@cluster0.owz5w.mongodb.net/School?retryWrites=true&w=majority"
+    "mongodb+srv://OG1:11223344@cluster0.owz5w.mongodb.net/School1?retryWrites=true&w=majority"
   )
   .then(() => {
     app.listen(5000);
