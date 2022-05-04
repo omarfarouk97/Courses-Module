@@ -7,7 +7,7 @@ const createCourse = async (req, res, next) => {
 
   try {
     let existingTitle = await Course.findOne({ title: title });
-    console.log(existingTitle);
+
     if (existingTitle) {
       res.json({
         message: "invalid inputs, course with same title already exists.",
@@ -20,6 +20,8 @@ const createCourse = async (req, res, next) => {
   const newCourse = new Course({ title, description, coverImage, id });
   try {
     await newCourse.save();
+    let now = newCourse.createdAt;
+    console.log(now);
   } catch (error) {
     return next(error);
   }
@@ -60,16 +62,32 @@ const deleteCourse = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-  // if (!delCourse) {
-  //   res.json({
-  //     message: "couldnt delete, no course with such ID, please try again",
-  //   });
-  //   return;
-  // }
-  let now = new Date().getUTCDate;
-  console.log(now);
-  console.log(delCourse.createdAt);
+  if (!delCourse) {
+    res.json({
+      message:
+        "Deletion error, no course with entered ID exists, please try again",
+    });
+    return;
+  }
+  const milliSToDay = 1000 * 60 * 60 * 24;
+  let currentDay = new Date();
+  let dayDiff =
+    (currentDay.getTime() - delCourse.createdAt.getTime()) / milliSToDay;
+
+  if (dayDiff <= 3) {
+    try {
+      await Course.deleteOne({ id });
+    } catch (error) {
+      return next(error);
+    }
+    res.json({ message: `Course: ${delCourse.title}, deleted.` });
+  } else {
+    res.json({
+      message: `Couldn't delete course:${delCourse.title}, course has passed allowed deletion period (3 Days).`,
+    });
+    return;
+  }
 };
 exports.createCourse = createCourse;
 exports.updateCourse = updateCourse;
-exports.delCourse = deleteCourse;
+exports.deleteCourse = deleteCourse;
