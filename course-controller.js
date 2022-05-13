@@ -20,8 +20,7 @@ const createCourse = async (req, res, next) => {
   const newCourse = new Course({ title, description, coverImage, id });
   try {
     await newCourse.save();
-    let now = newCourse.createdAt;
-    console.log(now);
+    //let now = newCourse.createdAt;
   } catch (error) {
     return next(error);
   }
@@ -88,6 +87,30 @@ const deleteCourse = async (req, res, next) => {
     return;
   }
 };
+const listCourses = async (req, res, next) => {
+  let courses;
+  try {
+    courses = await Course.find();
+  } catch (error) {
+    return next(error);
+  }
+  res.json({ courses: courses });
+};
+const filterCourses = async (req, res, next) => {
+  let { filter } = req.body; //to test,enter in JSON Format {"filter":"<insert here value you want to search>""}
+  let results;
+  try {
+    results = await Course.find({
+      title: { $regex: filter, $options: "i" },
+    });
+  } catch (err) {
+    return next(err);
+  }
+  res.json({ result: results });
+};
+
 exports.createCourse = createCourse;
 exports.updateCourse = updateCourse;
 exports.deleteCourse = deleteCourse;
+exports.listCourses = listCourses;
+exports.filterCourses = filterCourses;
